@@ -1,0 +1,33 @@
+.container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.svg {
+  transform: rotate(-90deg);
+  position: absolute;
+}
+
+.progress {
+  transition: stroke-dasharray 1s ease;
+}
+
+.content {
+  text-align: center;
+  z-index: 1;
+}
+
+.percentage {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2D2926;
+  line-height: 1;
+}
+
+.label {
+  font-size: 10px;
+  color: #9A8880;
+  margin-top: 2px;
+}
