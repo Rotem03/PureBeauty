@@ -1,10 +1,12 @@
 .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 56px 40px 80px;
   min-height: 100vh;
-  padding: 56px 20px 110px;
 }
 
 .header {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
@@ -16,14 +18,14 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: #B88A76;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .title {
-  font-size: 26px;
+  font-size: 40px;
   font-weight: 300;
   color: #2D2926;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 .title span {
@@ -34,27 +36,27 @@
   background: #2D2926;
   color: #F9F7F5;
   border-radius: 999px;
-  padding: 8px 16px;
-  font-size: 12px;
+  padding: 10px 20px;
+  font-size: 13px;
   font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .filters {
   display: flex;
   gap: 8px;
-  margin-bottom: 24px;
+  margin-bottom: 36px;
 }
 
 .filterButton {
   background: transparent;
   color: #9A8880;
-  border: 1px solid #E8D5C8;
+  border: 1.5px solid #E8D5C8;
   border-radius: 999px;
-  padding: 8px 18px;
-  font-size: 11px;
+  padding: 9px 22px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.08em;
   cursor: pointer;
@@ -68,10 +70,15 @@
   border-color: #2D2926;
 }
 
+.filterButton:hover:not(.active) {
+  border-color: #B88A76;
+  color: #B88A76;
+}
+
 .productGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
 }
 
 .productCard {
@@ -79,10 +86,16 @@
   border-radius: 20px;
   overflow: hidden;
   border: 1px solid #E8D5C8;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.productCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(45, 41, 38, 0.1);
 }
 
 .productImage {
-  height: 160px;
+  height: 220px;
   background: #E8D5C8;
   position: relative;
   overflow: hidden;
@@ -97,59 +110,59 @@
 
 .matchBadge {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(249, 247, 245, 0.9);
+  top: 12px;
+  right: 12px;
+  background: rgba(249, 247, 245, 0.92);
   backdrop-filter: blur(8px);
   border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 10px;
+  padding: 5px 12px;
+  font-size: 11px;
   font-weight: 700;
   color: #B88A76;
 }
 
 .productInfo {
-  padding: 14px 14px 16px;
+  padding: 20px 20px 22px;
 }
 
 .category {
   font-size: 10px;
   color: #9A8880;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  margin-bottom: 4px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
 }
 
 .productName {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: #2D2926;
-  margin-bottom: 2px;
-  line-height: 1.25;
+  margin-bottom: 4px;
+  line-height: 1.3;
 }
 
 .brand {
-  font-size: 12px;
+  font-size: 13px;
   color: #9A8880;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .addButton {
   width: 100%;
-  padding: 10px 0;
+  padding: 11px 0;
   background: #2D2926;
   color: #F9F7F5;
   border: none;
   border-radius: 12px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.06em;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  transition: background 0.2s;
+  gap: 7px;
+  transition: background 0.2s, transform 0.15s;
   font-family: 'DM Sans', sans-serif;
 }
 
@@ -159,12 +172,12 @@
 
 .addButton:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(45, 41, 38, 0.15);
+  box-shadow: 0 4px 14px rgba(45, 41, 38, 0.15);
 }
 
 .loadingState {
-  padding: 60px 24px;
+  padding: 80px 24px;
   text-align: center;
   color: #9A8880;
-  font-size: 15px;
+  font-size: 16px;
 }

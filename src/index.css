@@ -17,12 +17,23 @@ body {
   background: #F9F7F5;
   color: #2D2926;
   -webkit-font-smoothing: antialiased;
-  max-width: 480px;
-  margin: 0 auto;
+}
+
+.page-with-nav {
+  padding-top: 64px;
 }
 
 ::-webkit-scrollbar {
-  display: none;
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E8D5C8;
+  border-radius: 3px;
 }
 
 button {
