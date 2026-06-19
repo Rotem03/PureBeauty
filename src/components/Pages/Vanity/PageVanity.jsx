@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Icon } from '../../Icon/Icon'
 import { CircleProgress } from '../../CircleProgress/CircleProgress'
 import { useApp } from '../../../context/AppContext'
 import { useSkinProfile } from '../../../hooks/useSkinProfile'
@@ -24,6 +23,8 @@ export const PageVanity = () => {
   const glowScore = profile?.glow_score ?? 87
   const undertone = profile?.undertone ?? 'Warm Neutral'
   const faceShape = profile?.face_shape ?? 'Oval'
+  const hydration = profile?.hydration_pct ?? 72
+  const oiliness = profile?.oiliness_pct ?? 45
 
   const handleSignOut = async () => {
     await signOut()
@@ -37,109 +38,177 @@ export const PageVanity = () => {
     if (url) setAvatarUrl(url)
   }
 
+  const doneCount = routine.filter(r => r.done).length
+
+  const undertoneGradient = undertone.toLowerCase().includes('warm')
+    ? 'linear-gradient(135deg, #C4956A, #E8C49A)'
+    : undertone.toLowerCase().includes('cool')
+    ? 'linear-gradient(135deg, #8A9EC4, #C4D0E8)'
+    : 'linear-gradient(135deg, #B8A89A, #D4C8C0)'
+
   return (
-    <div className={styles.container}>
-      {/* Profile header */}
-      <div className={styles.profileHeader}>
-        <div className={styles.avatarRow}>
-          <div
-            className={styles.avatar}
-            onClick={() => user && fileInputRef.current?.click()}
-            style={{ cursor: user ? 'pointer' : 'default', overflow: 'hidden' }}
-            title={user ? 'Click to change photo' : ''}
-          >
-            {avatarUrl ? (
-              <img src={avatarUrl} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
-            ) : (
-              <Icon name="vanity" size={26} color={theme.accent} />
-            )}
-            {uploading && (
-              <div style={{ position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', fontSize: 10 }}>…</div>
-            )}
-          </div>
-          <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarChange} />
-          <div>
-            <div className={styles.name}>{displayName}</div>
-            <div className={styles.subtitle}>{undertone} · {faceShape} Face</div>
-          </div>
-        </div>
-        {user ? (
-          <button onClick={handleSignOut} className={styles.signOutBtn}>Sign Out</button>
-        ) : (
-          <button onClick={() => navigate('/auth')} className={styles.signOutBtn}>Sign In</button>
-        )}
-      </div>
+    <div className={styles.page}>
 
-      {/* Glow Score */}
-      <div className={styles.glowCard}>
-        <CircleProgress pct={glowScore} size={90} stroke={7} color={theme.accent} label="Glow" />
-        <div>
-          <div className={styles.glowLabel}>Glow Score</div>
-          <div className={styles.glowScore}>
-            {glowScore}<span>/100</span>
-          </div>
-          <div className={styles.glowText}>
-            {glowScore >= 85 ? 'Excellent skin health ✨' :
-             glowScore >= 70 ? 'Great skin health 🌸' : 'Good progress 💪'}
-          </div>
-        </div>
-      </div>
-
-      {/* My products */}
-      <div className={styles.collectionCard}>
-        <div className={styles.cardLabel}>My Collection</div>
-        {collection.length === 0 ? (
-          <button onClick={() => navigate('/shop')} className={styles.emptyCollection}>
-            + Browse your matched products
-          </button>
-        ) : (
-          <div className={styles.productScroll}>
-            {collection.slice(0, 4).map((c) => {
-              const p = c.products ?? c
-              return (
-                <div key={c.product_id ?? c.id} className={styles.productThumb}>
-                  <div className={styles.thumbImage}>
-                    {p.image_url && <img src={p.image_url} alt={p.name} />}
-                  </div>
-                  <div className={styles.thumbBrand}>{p.brand}</div>
-                </div>
-              )
-            })}
-            <button onClick={() => navigate('/shop')} className={styles.addMore}>
-              <Icon name="plus" size={20} color={theme.muted} />
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Daily routine */}
-      <div className={styles.routineCard}>
-        <div className={styles.cardLabel}>Daily Routine</div>
-        {routine.map((r, i) => (
-          <button key={i} onClick={() => toggleStep(i)} className={styles.routineItem}>
-            <div className={`${styles.routineCheck} ${r.done ? styles.done : ''}`}>
-              {r.done ? (
-                <Icon name="check" size={16} color={theme.white} />
+      {/* Hero Banner */}
+      <div className={styles.hero}>
+        <div className={styles.heroInner}>
+          <div className={styles.heroLeft}>
+            <div
+              className={styles.avatar}
+              onClick={() => user && fileInputRef.current?.click()}
+              title={user ? 'Click to change photo' : ''}
+            >
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="avatar" className={styles.avatarImg} />
               ) : (
-                <div className={styles.dot} />
+                <span className={styles.avatarInitial}>{displayName[0]?.toUpperCase()}</span>
               )}
+              {uploading && <div className={styles.avatarLoading}>…</div>}
+              {user && <div className={styles.avatarEdit}>✎</div>}
             </div>
-            <div className={styles.routineContent}>
-              <div className={`${styles.routineLabel} ${r.done ? styles.done : ''}`}>
-                {r.label}
+            <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarChange} />
+            <div>
+              <h1 className={styles.heroName}>{displayName}</h1>
+              <p className={styles.heroSub}>{undertone} · {faceShape} Face</p>
+              <div className={styles.heroBadges}>
+                <span className={styles.heroBadge}>✦ AI Skin Matched</span>
+                <span className={styles.heroBadge}>◈ Profile Active</span>
               </div>
-              <div className={styles.routineTime}>{r.time}</div>
             </div>
-          </button>
-        ))}
+          </div>
+          <div className={styles.heroRight}>
+            {user ? (
+              <button onClick={handleSignOut} className={styles.signOutBtn}>Sign Out</button>
+            ) : (
+              <button onClick={() => navigate('/auth')} className={styles.signInHeroBtn}>Sign In to Save</button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Stats Row */}
+      <div className={styles.statsRow}>
+        <div className={styles.statCard}>
+          <CircleProgress pct={glowScore} size={72} stroke={6} color={theme.accent} label="Glow" />
+          <div className={styles.statInfo}>
+            <div className={styles.statLabel}>Glow Score</div>
+            <div className={styles.statValue}>{glowScore}<span>/100</span></div>
+            <div className={styles.statSub}>
+              {glowScore >= 85 ? 'Excellent ✨' : glowScore >= 70 ? 'Great 🌸' : 'Good 💪'}
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.statCard}>
+          <div className={styles.undertoneOrb} style={{ background: undertoneGradient }} />
+          <div className={styles.statInfo}>
+            <div className={styles.statLabel}>Undertone</div>
+            <div className={styles.statValue} style={{ fontSize: 20 }}>{undertone}</div>
+            <div className={styles.statSub}>Foundation match key</div>
+          </div>
+        </div>
+
+        <div className={styles.statCard}>
+          <div className={styles.miniStats}>
+            <div className={styles.miniStat}>
+              <div className={styles.miniBar}>
+                <div className={styles.miniBarFill} style={{ width: `${hydration}%`, background: '#7BAFD4' }} />
+              </div>
+              <span>Hydration {hydration}%</span>
+            </div>
+            <div className={styles.miniStat}>
+              <div className={styles.miniBar}>
+                <div className={styles.miniBarFill} style={{ width: `${oiliness}%`, background: '#B88A76' }} />
+              </div>
+              <span>Oiliness {oiliness}%</span>
+            </div>
+          </div>
+          <div className={styles.statInfo}>
+            <div className={styles.statLabel}>Skin Stats</div>
+            <div className={styles.statValue} style={{ fontSize: 18 }}>{faceShape} Face</div>
+            <div className={styles.statSub}>Shape analysis</div>
+          </div>
+        </div>
+
+        <div className={styles.statCard}>
+          <div className={styles.routineRingWrap}>
+            <svg viewBox="0 0 60 60" width={72} height={72}>
+              <circle cx="30" cy="30" r="24" fill="none" stroke="#E8D5C8" strokeWidth="5" />
+              <circle cx="30" cy="30" r="24" fill="none" stroke="#B88A76" strokeWidth="5"
+                strokeDasharray={`${routine.length ? (doneCount / routine.length) * 150.8 : 0} 150.8`}
+                strokeLinecap="round" transform="rotate(-90 30 30)" />
+            </svg>
+            <span className={styles.routineRingText}>{doneCount}/{routine.length}</span>
+          </div>
+          <div className={styles.statInfo}>
+            <div className={styles.statLabel}>Today's Routine</div>
+            <div className={styles.statValue} style={{ fontSize: 18 }}>
+              {doneCount === routine.length ? 'Complete!' : `${routine.length - doneCount} left`}
+            </div>
+            <div className={styles.statSub}>{doneCount === routine.length ? 'Great work 🎉' : 'Keep going'}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Grid */}
+      <div className={styles.grid}>
+        {/* Collection */}
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <div className={styles.cardTitle}>My Collection</div>
+            <button onClick={() => navigate('/shop')} className={styles.cardAction}>+ Add more</button>
+          </div>
+          {collection.length === 0 ? (
+            <button onClick={() => navigate('/shop')} className={styles.emptyState}>
+              <div className={styles.emptyIcon}>🛍</div>
+              <div className={styles.emptyText}>Browse AI-matched products</div>
+              <div className={styles.emptySubtext}>Your saved products will appear here</div>
+            </button>
+          ) : (
+            <div className={styles.productGrid}>
+              {collection.slice(0, 6).map((c) => {
+                const p = c.products ?? c
+                return (
+                  <div key={c.product_id ?? c.id} className={styles.productThumb}>
+                    <div className={styles.thumbImg}>
+                      {p.image_url && <img src={p.image_url} alt={p.name} />}
+                    </div>
+                    <div className={styles.thumbName}>{p.name}</div>
+                    <div className={styles.thumbBrand}>{p.brand}</div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Routine */}
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <div className={styles.cardTitle}>Daily Routine</div>
+            <div className={styles.cardBadge}>{doneCount}/{routine.length} done</div>
+          </div>
+          <div className={styles.routineList}>
+            {routine.map((r, i) => (
+              <button key={i} onClick={() => toggleStep(i)} className={`${styles.routineItem} ${r.done ? styles.routineDone : ''}`}>
+                <div className={styles.routineTime}>{r.time}</div>
+                <div className={styles.routineCheck}>
+                  {r.done ? '✓' : <div className={styles.routineDot} />}
+                </div>
+                <div className={styles.routineLabel}>{r.label}</div>
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       {!user && (
-        <div className={styles.authPrompt}>
-          <p>Sign in to save your profile and sync your routine across devices.</p>
-          <button onClick={() => navigate('/auth')} className={styles.authButton}>
-            Create Account →
-          </button>
+        <div className={styles.authBanner}>
+          <div>
+            <div className={styles.authBannerTitle}>Save your profile</div>
+            <div className={styles.authBannerSub}>Sign in to sync your routine and collection across devices.</div>
+          </div>
+          <button onClick={() => navigate('/auth')} className={styles.authBannerBtn}>Create Account →</button>
         </div>
       )}
     </div>
