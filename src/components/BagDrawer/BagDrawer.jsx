@@ -49,7 +49,7 @@ export const BagDrawer = () => {
                     </div>
                     <button
                       className={styles.removeBtn}
-                      onClick={() => user && removeFromCollection(user.id, id)}
+                      onClick={() => removeFromCollection(user?.id, id)}
                       title="Remove"
                     >
                       ✕

@@ -46,9 +46,11 @@ export const useUserCollection = (userId) => {
     fetch()
   }, [userId])
 
-  const addToCollection = async (userId, productId, matchScore) => {
+  const addToCollection = async (userId, productId, matchScore, productData) => {
     setCollection(prev =>
-      prev.some(p => p.product_id === productId) ? prev : [...prev, { product_id: productId }]
+      prev.some(p => p.product_id === productId)
+        ? prev
+        : [...prev, { product_id: productId, products: productData ?? null }]
     )
     if (!supabase || !userId) return { error: null }
     const { error } = await supabase

@@ -28,7 +28,7 @@ export const PageShop = () => {
       await removeFromCollection(user?.id, id)
       setToast({ message: 'Removed from bag', type: 'success' })
     } else {
-      await addToCollection(user?.id, id, p.match_score ?? null)
+      await addToCollection(user?.id, id, p.match_score ?? null, p)
       setToast({ message: 'Added to bag ✓', type: 'success' })
     }
   }
