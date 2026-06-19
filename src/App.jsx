@@ -9,6 +9,7 @@ import { PageResults } from './components/Pages/Results/PageResults'
 import { PageShop } from './components/Pages/Shop/PageShop'
 import { PageVanity } from './components/Pages/Vanity/PageVanity'
 import { PageTutorials } from './components/Pages/Tutorials/PageTutorials'
+import { PageCheckout } from './components/Pages/Checkout/PageCheckout'
 import './index.css'
 
 const HIDE_NAV = ['/auth']
@@ -30,6 +31,7 @@ function AppInner() {
           <Route path="/shop"      element={<PageShop />} />
           <Route path="/tutorials" element={<PageTutorials />} />
           <Route path="/vanity"    element={<PageVanity />} />
+          <Route path="/checkout"  element={<PageCheckout />} />
         </Routes>
       </div>
     </>

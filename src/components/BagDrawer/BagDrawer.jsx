@@ -64,7 +64,7 @@ export const BagDrawer = () => {
                 <span>Estimated Total</span>
                 <span className={styles.totalAmt}>${total.toFixed(2)}</span>
               </div>
-              <button className={styles.checkoutBtn} onClick={() => setIsOpen(false)}>
+              <button className={styles.checkoutBtn} onClick={() => { setIsOpen(false); navigate('/checkout') }}>
                 Proceed to Checkout
               </button>
               <button className={styles.continueBtn} onClick={() => { setIsOpen(false); navigate('/shop') }}>
