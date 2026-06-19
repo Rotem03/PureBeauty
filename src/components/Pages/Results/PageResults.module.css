@@ -174,3 +174,45 @@
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(45, 41, 38, 0.2);
 }
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.saveButton {
+  background: transparent;
+  border: 1.5px solid #E8D5C8;
+  border-radius: 999px;
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #9A8880;
+  cursor: pointer;
+  width: 100%;
+  font-family: 'DM Sans', sans-serif;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.saveButton:hover {
+  border-color: #B88A76;
+  color: #B88A76;
+}
+
+.loadingState, .emptyState {
+  padding: 80px 24px;
+  text-align: center;
+  color: #9A8880;
+  font-size: 15px;
+}
+
+.linkBtn {
+  background: none;
+  border: none;
+  color: #B88A76;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}

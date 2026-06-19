@@ -1,24 +1,46 @@
-import { useState } from "react";
-import { Icon } from "../../Icon/Icon";
-import { PRODUCTS } from "../../../constants/data";
-import { theme } from "../../../constants/theme";
-import styles from "./PageShop.module.css";
+import { useState } from 'react'
+import { Icon } from '../../Icon/Icon'
+import { Toast } from '../../Toast/Toast'
+import { useProducts, useUserCollection } from '../../../hooks/useProducts'
+import { useApp } from '../../../context/AppContext'
+import { theme } from '../../../constants/theme'
+import styles from './PageShop.module.css'
+
+const FILTERS = ['All', 'Luxury', 'Drugstore']
 
 export const PageShop = () => {
-  const [filter, setFilter] = useState("All");
-  const [bag, setBag] = useState([]);
-  const FILTERS = ["All", "Luxury", "Drugstore"];
+  const { user } = useApp()
+  const { products, loading } = useProducts()
+  const { collection, addToCollection, removeFromCollection } = useUserCollection(user?.id)
+  const [filter, setFilter] = useState('All')
+  const [toast, setToast] = useState(null)
 
-  const filtered =
-    filter === "All" ? PRODUCTS : PRODUCTS.filter((p) => p.category === filter);
-  const toggle = (p) =>
-    setBag((b) =>
-      b.find((x) => x.id === p.id) ? b.filter((x) => x.id !== p.id) : [...b, p]
-    );
+  const filtered = filter === 'All' ? products : products.filter(p => p.category === filter)
+
+  const isInCollection = (productId) =>
+    collection.some(c => c.product_id === productId || c.id === productId)
+
+  const toggleProduct = async (p) => {
+    const id = p.id
+    const inCollection = isInCollection(id)
+    if (!user) {
+      // Guest — local toggle only (no persistence)
+      setToast({ message: inCollection ? 'Removed from bag' : 'Added to bag ✓', type: 'success' })
+      return
+    }
+    if (inCollection) {
+      await removeFromCollection(user.id, id)
+      setToast({ message: 'Removed from collection', type: 'success' })
+    } else {
+      await addToCollection(user.id, id, p.match_score)
+      setToast({ message: 'Saved to My Vanity ✓', type: 'success' })
+    }
+  }
+
+  const collectionCount = collection.length
 
   return (
     <div className={styles.container}>
-      {/* Header */}
       <div className={styles.header}>
         <div>
           <div className={styles.label}>Curated For You</div>
@@ -27,64 +49,60 @@ export const PageShop = () => {
             <span>Matches</span>
           </h2>
         </div>
-        {bag.length > 0 && (
+        {collectionCount > 0 && (
           <div className={styles.bagBadge}>
             <Icon name="shop" size={14} color={theme.bg} />
-            {bag.length}
+            {collectionCount}
           </div>
         )}
       </div>
 
-      {/* Filters */}
       <div className={styles.filters}>
         {FILTERS.map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`${styles.filterButton} ${
-              filter === f ? styles.active : ""
-            }`}
+            className={`${styles.filterButton} ${filter === f ? styles.active : ''}`}
           >
             {f.toUpperCase()}
           </button>
         ))}
       </div>
 
-      {/* 2-col grid */}
-      <div className={styles.productGrid}>
-        {filtered.map((p) => {
-          const added = bag.some((x) => x.id === p.id);
-          return (
-            <div key={p.id} className={styles.productCard}>
-              <div className={styles.productImage}>
-                <img src={p.img} alt={p.name} />
-                <div className={styles.matchBadge}>{p.match}% Match</div>
+      {loading ? (
+        <div className={styles.loadingState}>Loading your matches…</div>
+      ) : (
+        <div className={styles.productGrid}>
+          {filtered.map((p) => {
+            const added = isInCollection(p.id)
+            return (
+              <div key={p.id} className={styles.productCard}>
+                <div className={styles.productImage}>
+                  <img src={p.image_url || p.img} alt={p.name} />
+                  <div className={styles.matchBadge}>{p.match_score || p.match}% Match</div>
+                </div>
+                <div className={styles.productInfo}>
+                  <div className={styles.category}>{p.category?.toUpperCase()}</div>
+                  <div className={styles.productName}>{p.name}</div>
+                  <div className={styles.brand}>{p.brand}</div>
+                  <button
+                    onClick={() => toggleProduct(p)}
+                    className={`${styles.addButton} ${added ? styles.added : ''}`}
+                  >
+                    {added ? (
+                      <><Icon name="check" size={13} color={theme.bg} /> Added</>
+                    ) : (
+                      <><Icon name="plus" size={13} color={theme.bg} /> Add to Bag</>
+                    )}
+                  </button>
+                </div>
               </div>
-              <div className={styles.productInfo}>
-                <div className={styles.category}>{p.category.toUpperCase()}</div>
-                <div className={styles.productName}>{p.name}</div>
-                <div className={styles.brand}>{p.brand}</div>
-                <button
-                  onClick={() => toggle(p)}
-                  className={`${styles.addButton} ${added ? styles.added : ""}`}
-                >
-                  {added ? (
-                    <>
-                      <Icon name="check" size={13} color={theme.bg} />
-                      Added
-                    </>
-                  ) : (
-                    <>
-                      <Icon name="plus" size={13} color={theme.bg} />
-                      Add to Bag
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            )
+          })}
+        </div>
+      )}
+
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
     </div>
-  );
-};
+  )
+}

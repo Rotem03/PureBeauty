@@ -1,11 +1,35 @@
-import { useState } from "react";
-import { TUTORIAL_STEPS } from "../../../constants/data";
-import { theme } from "../../../constants/theme";
-import styles from "./PageTutorials.module.css";
+import { useState } from 'react'
+import { useTutorials, useTutorialProgress } from '../../../hooks/useTutorials'
+import { useApp } from '../../../context/AppContext'
+import { Toast } from '../../Toast/Toast'
+import styles from './PageTutorials.module.css'
 
 export const PageTutorials = () => {
-  const [step, setStep] = useState(0);
-  const current = TUTORIAL_STEPS[step];
+  const { user } = useApp()
+  const { tutorials, loading } = useTutorials()
+  const [activeTutorial] = useState(0)
+  const [toast, setToast] = useState(null)
+
+  const tutorial = tutorials[activeTutorial]
+  const steps = tutorial?.steps ?? []
+
+  const { currentStep, setCurrentStep, completed, advance, back } =
+    useTutorialProgress(user?.id, tutorial?.id)
+
+  if (loading || !tutorial) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loadingState}>Loading tutorial…</div>
+      </div>
+    )
+  }
+
+  const current = steps[currentStep]
+
+  const handleComplete = () => {
+    advance(steps.length)
+    setToast({ message: 'Tutorial complete! 🎉', type: 'success' })
+  }
 
   return (
     <div className={styles.container}>
@@ -19,29 +43,25 @@ export const PageTutorials = () => {
 
       {/* AR feed simulation */}
       <div className={styles.arFrame}>
-        {/* Face frame */}
         <div className={styles.faceFrame}>
-          {/* AR overlay zones based on step */}
-          {step === 0 && <div className={styles.overlayStep0} />}
-          {step === 1 && (
+          {currentStep === 0 && <div className={styles.overlayStep0} />}
+          {currentStep === 1 && (
             <>
               <div className={styles.overlayStep1Left} />
               <div className={styles.overlayStep1Right} />
             </>
           )}
-          {step === 2 && <div className={styles.overlayStep2} />}
-          {step === 3 && <div className={styles.overlayStep3} />}
+          {currentStep === 2 && <div className={styles.overlayStep2} />}
+          {currentStep === 3 && <div className={styles.overlayStep3} />}
         </div>
 
-        {/* Step badge */}
         <div className={styles.stepBadge}>
           <div className={styles.stepLabel}>
-            STEP {current.step} / {TUTORIAL_STEPS.length}
+            STEP {(current?.step ?? currentStep + 1)} / {steps.length}
           </div>
-          <div className={styles.stepZone}>{current.zone}</div>
+          <div className={styles.stepZone}>{current?.zone}</div>
         </div>
 
-        {/* Live indicator */}
         <div className={styles.liveIndicator}>
           <div className={styles.liveDot} />
           <span>LIVE AR</span>
@@ -51,44 +71,44 @@ export const PageTutorials = () => {
       {/* Step info card */}
       <div className={styles.stepCard}>
         <div className={styles.stepHeader}>
-          <div className={styles.stepNumber}>{current.step}</div>
+          <div className={styles.stepNumber}>{current?.step ?? currentStep + 1}</div>
           <div>
             <div className={styles.stepTitle}>
-              Step {current.step}: {current.title}
+              Step {current?.step ?? currentStep + 1}: {current?.title}
             </div>
           </div>
         </div>
-        <p className={styles.stepDescription}>{current.desc}</p>
+        <p className={styles.stepDescription}>{current?.desc}</p>
 
-        {/* Nav buttons */}
         <div className={styles.navButtons}>
           <button
-            onClick={() => setStep((s) => Math.max(0, s - 1))}
-            disabled={step === 0}
+            onClick={back}
+            disabled={currentStep === 0}
             className={styles.backButton}
           >
             ← Back
           </button>
           <button
-            onClick={() => setStep((s) => Math.min(TUTORIAL_STEPS.length - 1, s + 1))}
-            disabled={step === TUTORIAL_STEPS.length - 1}
+            onClick={currentStep === steps.length - 1 ? handleComplete : () => advance(steps.length)}
             className={styles.nextButton}
           >
-            {step === TUTORIAL_STEPS.length - 1 ? "Complete ✓" : "Next Step →"}
+            {currentStep === steps.length - 1 ? 'Complete ✓' : 'Next Step →'}
           </button>
         </div>
       </div>
 
       {/* Step dots */}
       <div className={styles.dots}>
-        {TUTORIAL_STEPS.map((_, i) => (
+        {steps.map((_, i) => (
           <button
             key={i}
-            onClick={() => setStep(i)}
-            className={`${styles.dot} ${i === step ? styles.active : ""}`}
+            onClick={() => setCurrentStep(i)}
+            className={`${styles.dot} ${i === currentStep ? styles.active : ''} ${i < currentStep ? styles.done : ''}`}
           />
         ))}
       </div>
+
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
     </div>
-  );
-};
+  )
+}

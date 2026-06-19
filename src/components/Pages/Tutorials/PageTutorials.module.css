@@ -269,3 +269,14 @@
   width: 20px;
   background: #B88A76;
 }
+
+.dot.done {
+  background: #C9B8B0;
+}
+
+.loadingState {
+  padding: 80px 24px;
+  text-align: center;
+  color: #9A8880;
+  font-size: 15px;
+}

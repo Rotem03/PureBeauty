@@ -161,3 +161,10 @@
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(45, 41, 38, 0.15);
 }
+
+.loadingState {
+  padding: 60px 24px;
+  text-align: center;
+  color: #9A8880;
+  font-size: 15px;
+}

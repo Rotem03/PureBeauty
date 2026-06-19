@@ -34,6 +34,27 @@
 
 .logoContainer {
   margin-bottom: 48px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.signInLink {
+  background: transparent;
+  border: 1px solid #E8D5C8;
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #9A8880;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.signInLink:hover {
+  border-color: #B88A76;
+  color: #B88A76;
 }
 
 .logo {

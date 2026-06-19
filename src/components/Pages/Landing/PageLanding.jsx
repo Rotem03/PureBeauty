@@ -1,7 +1,10 @@
-import { Icon } from "../../Icon/Icon";
-import styles from "./PageLanding.module.css";
+import { useNavigate } from 'react-router-dom'
+import { Icon } from '../../Icon/Icon'
+import styles from './PageLanding.module.css'
 
-export const PageLanding = ({ onNav }) => {
+export const PageLanding = () => {
+  const navigate = useNavigate()
+
   return (
     <div className={styles.container}>
       {/* Decorative blobs */}
@@ -11,6 +14,9 @@ export const PageLanding = ({ onNav }) => {
       {/* Logo */}
       <div className={styles.logoContainer}>
         <div className={styles.logo}>PureBeauty</div>
+        <button onClick={() => navigate('/auth')} className={styles.signInLink}>
+          Sign In
+        </button>
       </div>
 
       {/* Hero image area */}
@@ -19,7 +25,6 @@ export const PageLanding = ({ onNav }) => {
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEhRwZEgBQBE5D2RUXfEDOfQuRlz8xVHKiT2ADpfwhI05kFZK2yTFOxwTsIi82DmE5U98GbuwDbZCpeqdw_UhsOBi7ZDQWGlB41xwkpB8p0DwSjLTSATwE0uDoiQ7d_ZqCdrVrwP8JhvYi6X9VEcp90uc6IIX5Lv7nTRjKPt-Ki1I693mXXdaQHw7aFOVxOnCPxtTfqpdA_d5H-J0bM1-KS31oTZy0FyW87pHfnhIAlxK1QD9KIuhb09Hi54gkuzEUrM3Wkw03zBw"
           alt="Premium beauty products"
         />
-        {/* Elegant tag */}
         <div className={styles.tag}>
           <div className={styles.tagText}>AI-MATCHED FOR YOU</div>
         </div>
@@ -35,19 +40,19 @@ export const PageLanding = ({ onNav }) => {
       </p>
 
       {/* CTA */}
-      <button onClick={() => onNav("scan")} className={styles.ctaButton}>
+      <button onClick={() => navigate('/scan')} className={styles.ctaButton}>
         Start AI Scan
         <Icon name="arrow" size={16} color="#F9F7F5" />
       </button>
 
       {/* Feature pills */}
       <div className={styles.featurePills}>
-        {["Undertone Match", "Skin Analysis", "AR Tutorials"].map((f) => (
+        {['Undertone Match', 'Skin Analysis', 'AR Tutorials'].map((f) => (
           <div key={f} className={styles.pill}>
             {f}
           </div>
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
