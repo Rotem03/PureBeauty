@@ -1,0 +1,266 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(45, 41, 38, 0.4);
+  z-index: 200;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 420px;
+  background: #F9F7F5;
+  z-index: 201;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: -8px 0 40px rgba(45, 41, 38, 0.12);
+}
+
+.drawer.open {
+  transform: translateX(0);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 28px;
+  border-bottom: 1px solid #E8D5C8;
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2D2926;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.title span {
+  background: #B88A76;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #9A8880;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.close:hover {
+  background: #E8D5C8;
+  color: #2D2926;
+}
+
+/* Empty state */
+.empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 28px;
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.emptyTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2D2926;
+  margin-bottom: 8px;
+}
+
+.emptyText {
+  font-size: 14px;
+  color: #9A8880;
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+.shopBtn {
+  background: #2D2926;
+  color: #F9F7F5;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 28px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* Items list */
+.items {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #FFFFFF;
+  border: 1px solid #E8D5C8;
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.itemImage {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  background: #E8D5C8;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.itemImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mix-blend-mode: multiply;
+}
+
+.itemInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemName {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2D2926;
+  line-height: 1.3;
+  margin-bottom: 2px;
+}
+
+.itemBrand {
+  font-size: 11px;
+  color: #9A8880;
+  margin-bottom: 4px;
+}
+
+.itemPrice {
+  font-size: 13px;
+  font-weight: 700;
+  color: #B88A76;
+}
+
+.removeBtn {
+  background: none;
+  border: none;
+  color: #9A8880;
+  font-size: 14px;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+
+.removeBtn:hover {
+  background: #E8D5C8;
+  color: #2D2926;
+}
+
+/* Footer */
+.footer {
+  padding: 20px 28px 28px;
+  border-top: 1px solid #E8D5C8;
+  flex-shrink: 0;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #9A8880;
+}
+
+.totalAmt {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2D2926;
+}
+
+.checkoutBtn {
+  width: 100%;
+  padding: 14px;
+  background: #2D2926;
+  color: #F9F7F5;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 10px;
+  font-family: 'DM Sans', sans-serif;
+  transition: opacity 0.15s;
+}
+
+.checkoutBtn:hover {
+  opacity: 0.88;
+}
+
+.continueBtn {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  color: #9A8880;
+  border: 1.5px solid #E8D5C8;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.continueBtn:hover {
+  border-color: #B88A76;
+  color: #B88A76;
+}

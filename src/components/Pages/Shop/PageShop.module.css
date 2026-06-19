@@ -141,10 +141,22 @@
   line-height: 1.3;
 }
 
+.brandRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
 .brand {
   font-size: 13px;
   color: #9A8880;
-  margin-bottom: 16px;
+}
+
+.price {
+  font-size: 14px;
+  font-weight: 700;
+  color: #B88A76;
 }
 
 .addButton {

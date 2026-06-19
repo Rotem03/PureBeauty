@@ -1,5 +1,7 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
+import { BagProvider } from './context/BagContext'
 import { TopNav } from './components/TopNav/TopNav'
+import { BagDrawer } from './components/BagDrawer/BagDrawer'
 import { PageLanding } from './components/Pages/Landing/PageLanding'
 import { PageAuth } from './components/Pages/Auth/PageAuth'
 import { PageScanner } from './components/Pages/Scanner/PageScanner'
@@ -11,13 +13,14 @@ import './index.css'
 
 const HIDE_NAV = ['/auth']
 
-export default function App() {
+function AppInner() {
   const location = useLocation()
   const showNav = !HIDE_NAV.includes(location.pathname)
 
   return (
     <>
       {showNav && <TopNav />}
+      <BagDrawer />
       <div className={showNav ? 'page-with-nav' : ''}>
         <Routes>
           <Route path="/"          element={<PageLanding />} />
@@ -30,5 +33,13 @@ export default function App() {
         </Routes>
       </div>
     </>
+  )
+}
+
+export default function App() {
+  return (
+    <BagProvider>
+      <AppInner />
+    </BagProvider>
   )
 }

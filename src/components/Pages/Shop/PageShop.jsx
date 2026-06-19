@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Icon } from '../../Icon/Icon'
 import { Toast } from '../../Toast/Toast'
-import { useProducts, useUserCollection } from '../../../hooks/useProducts'
+import { useProducts } from '../../../hooks/useProducts'
+import { useBag } from '../../../context/BagContext'
 import { useApp } from '../../../context/AppContext'
 import { theme } from '../../../constants/theme'
 import styles from './PageShop.module.css'
@@ -11,7 +12,7 @@ const FILTERS = ['All', 'Luxury', 'Drugstore']
 export const PageShop = () => {
   const { user } = useApp()
   const { products, loading } = useProducts()
-  const { collection, addToCollection, removeFromCollection } = useUserCollection(user?.id)
+  const { collection, addToCollection, removeFromCollection, setIsOpen } = useBag()
   const [filter, setFilter] = useState('All')
   const [toast, setToast] = useState(null)
 
@@ -23,21 +24,14 @@ export const PageShop = () => {
   const toggleProduct = async (p) => {
     const id = p.id
     const inCollection = isInCollection(id)
-    if (!user) {
-      // Guest — local toggle only (no persistence)
-      setToast({ message: inCollection ? 'Removed from bag' : 'Added to bag ✓', type: 'success' })
-      return
-    }
     if (inCollection) {
-      await removeFromCollection(user.id, id)
-      setToast({ message: 'Removed from collection', type: 'success' })
+      if (user) await removeFromCollection(user.id, id)
+      setToast({ message: 'Removed from bag', type: 'success' })
     } else {
-      await addToCollection(user.id, id, p.match_score)
-      setToast({ message: 'Saved to My Vanity ✓', type: 'success' })
+      if (user) await addToCollection(user.id, id, p.match_score)
+      setToast({ message: 'Added to bag ✓', type: 'success' })
     }
   }
-
-  const collectionCount = collection.length
 
   return (
     <div className={styles.container}>
@@ -49,11 +43,11 @@ export const PageShop = () => {
             <span>Matches</span>
           </h2>
         </div>
-        {collectionCount > 0 && (
-          <div className={styles.bagBadge}>
+        {collection.length > 0 && (
+          <button className={styles.bagBadge} onClick={() => setIsOpen(true)}>
             <Icon name="shop" size={14} color={theme.bg} />
-            {collectionCount}
-          </div>
+            {collection.length} in bag — View →
+          </button>
         )}
       </div>
 
@@ -79,12 +73,17 @@ export const PageShop = () => {
               <div key={p.id} className={styles.productCard}>
                 <div className={styles.productImage}>
                   <img src={p.image_url || p.img} alt={p.name} />
-                  <div className={styles.matchBadge}>{p.match_score || p.match}% Match</div>
+                  {(p.match_score || p.match) && (
+                    <div className={styles.matchBadge}>{p.match_score || p.match}% Match</div>
+                  )}
                 </div>
                 <div className={styles.productInfo}>
                   <div className={styles.category}>{p.category?.toUpperCase()}</div>
                   <div className={styles.productName}>{p.name}</div>
-                  <div className={styles.brand}>{p.brand}</div>
+                  <div className={styles.brandRow}>
+                    <span className={styles.brand}>{p.brand}</span>
+                    {p.price && <span className={styles.price}>${parseFloat(p.price).toFixed(2)}</span>}
+                  </div>
                   <button
                     onClick={() => toggleProduct(p)}
                     className={`${styles.addButton} ${added ? styles.added : ''}`}

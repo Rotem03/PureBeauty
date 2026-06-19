@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useApp } from '../../context/AppContext'
+import { useBag } from '../../context/BagContext'
 import styles from './TopNav.module.css'
 
 const LINKS = [
@@ -13,6 +14,7 @@ export const TopNav = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { user } = useApp()
+  const { collection, setIsOpen } = useBag()
 
   return (
     <header className={styles.header}>
@@ -32,6 +34,16 @@ export const TopNav = () => {
           ))}
         </nav>
         <div className={styles.actions}>
+          <button className={styles.bagBtn} onClick={() => setIsOpen(true)} title="My Bag">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            {collection.length > 0 && (
+              <span className={styles.bagCount}>{collection.length}</span>
+            )}
+          </button>
           {user ? (
             <button onClick={() => navigate('/vanity')} className={styles.avatarBtn}>
               {user.email?.[0]?.toUpperCase() ?? 'U'}
