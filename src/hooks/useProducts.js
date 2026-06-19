@@ -47,23 +47,26 @@ export const useUserCollection = (userId) => {
   }, [userId])
 
   const addToCollection = async (userId, productId, matchScore) => {
-    if (!supabase) return { error: null }
-    const { error } = await supabase
-      .from('user_products')
-      .upsert({ user_id: userId, product_id: productId, match_score: matchScore })
-    if (!error) setCollection(prev =>
+    setCollection(prev =>
       prev.some(p => p.product_id === productId) ? prev : [...prev, { product_id: productId }]
     )
+    if (!supabase || !userId) return { error: null }
+    const { error } = await supabase
+      .from('user_products')
+      .upsert(
+        { user_id: userId, product_id: productId, match_score: matchScore ?? null },
+        { onConflict: 'user_id,product_id' }
+      )
     return { error }
   }
 
   const removeFromCollection = async (userId, productId) => {
-    if (!supabase) return { error: null }
+    setCollection(prev => prev.filter(p => p.product_id !== productId))
+    if (!supabase || !userId) return { error: null }
     const { error } = await supabase
       .from('user_products')
       .delete()
       .match({ user_id: userId, product_id: productId })
-    if (!error) setCollection(prev => prev.filter(p => p.product_id !== productId))
     return { error }
   }
 

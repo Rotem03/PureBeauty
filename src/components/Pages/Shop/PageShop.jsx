@@ -25,10 +25,10 @@ export const PageShop = () => {
     const id = p.id
     const inCollection = isInCollection(id)
     if (inCollection) {
-      if (user) await removeFromCollection(user.id, id)
+      await removeFromCollection(user?.id, id)
       setToast({ message: 'Removed from bag', type: 'success' })
     } else {
-      if (user) await addToCollection(user.id, id, p.match_score)
+      await addToCollection(user?.id, id, p.match_score ?? null)
       setToast({ message: 'Added to bag ✓', type: 'success' })
     }
   }
