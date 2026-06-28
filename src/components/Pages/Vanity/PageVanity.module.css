@@ -5,6 +5,55 @@
   padding: 0 40px 80px;
 }
 
+/* ── No scan banner ─────────────────────────────── */
+.noScanBanner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: linear-gradient(135deg, #FFF8F3, #F9F0E8);
+  border: 1.5px solid #E8C49A;
+  border-radius: 18px;
+  padding: 24px 28px;
+  margin: 28px 0 0;
+}
+
+.noScanIcon {
+  font-size: 28px;
+  color: #B88A76;
+  flex-shrink: 0;
+}
+
+.noScanTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2D2926;
+  margin-bottom: 4px;
+}
+
+.noScanSub {
+  font-size: 13px;
+  color: #9A8880;
+  line-height: 1.5;
+}
+
+.noScanBtn {
+  margin-left: auto;
+  flex-shrink: 0;
+  background: #2D2926;
+  color: #F9F7F5;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: 'DM Sans', sans-serif;
+  transition: opacity 0.15s;
+}
+
+.noScanBtn:hover { opacity: 0.85; }
+
 /* ── Hero ───────────────────────────────────────── */
 .hero {
   background: linear-gradient(135deg, #F0E8E2 0%, #F9F7F5 60%, #EDE3DC 100%);

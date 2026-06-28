@@ -12,7 +12,7 @@ import styles from './PageVanity.module.css'
 export const PageVanity = () => {
   const navigate = useNavigate()
   const { user, signOut } = useApp()
-  const { profile } = useSkinProfile()
+  const { profile, loading: profileLoading, hasScan } = useSkinProfile()
   const { collection } = useUserCollection(user?.id)
   const { routine, toggleStep } = useRoutine(user?.id)
   const { uploadAvatar, uploading } = useAvatar()
@@ -20,11 +20,12 @@ export const PageVanity = () => {
   const [avatarUrl, setAvatarUrl] = useState(null)
 
   const displayName = user?.user_metadata?.display_name ?? user?.email?.split('@')[0] ?? 'Guest'
-  const glowScore = profile?.glow_score ?? 87
-  const undertone = profile?.undertone ?? 'Warm Neutral'
-  const faceShape = profile?.face_shape ?? 'Oval'
-  const hydration = profile?.hydration_pct ?? 72
-  const oiliness = profile?.oiliness_pct ?? 45
+  const glowScore = profile?.glow_score ?? null
+  const undertone = profile?.undertone ?? null
+  const faceShape = profile?.face_shape ?? null
+  const hydration = profile?.hydration_pct ?? null
+  const oiliness = profile?.oiliness_pct ?? null
+  const noScan = user && !profileLoading && !hasScan
 
   const handleSignOut = async () => {
     await signOut()
@@ -40,9 +41,9 @@ export const PageVanity = () => {
 
   const doneCount = routine.filter(r => r.done).length
 
-  const undertoneGradient = undertone.toLowerCase().includes('warm')
+  const undertoneGradient = undertone?.toLowerCase().includes('warm')
     ? 'linear-gradient(135deg, #C4956A, #E8C49A)'
-    : undertone.toLowerCase().includes('cool')
+    : undertone?.toLowerCase().includes('cool')
     ? 'linear-gradient(135deg, #8A9EC4, #C4D0E8)'
     : 'linear-gradient(135deg, #B8A89A, #D4C8C0)'
 
@@ -69,7 +70,7 @@ export const PageVanity = () => {
             <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarChange} />
             <div>
               <h1 className={styles.heroName}>{displayName}</h1>
-              <p className={styles.heroSub}>{undertone} · {faceShape} Face</p>
+              <p className={styles.heroSub}>{undertone && faceShape ? `${undertone} · ${faceShape} Face` : 'Complete your AI scan to see your profile'}</p>
               <div className={styles.heroBadges}>
                 <span className={styles.heroBadge}>✦ AI Skin Matched</span>
                 <span className={styles.heroBadge}>◈ Profile Active</span>
@@ -86,15 +87,27 @@ export const PageVanity = () => {
         </div>
       </div>
 
+      {/* No scan banner */}
+      {noScan && (
+        <div className={styles.noScanBanner}>
+          <div className={styles.noScanIcon}>✦</div>
+          <div>
+            <div className={styles.noScanTitle}>You haven't done your AI scan yet</div>
+            <div className={styles.noScanSub}>Run your skin analysis to unlock your personalized profile, glow score, and product matches.</div>
+          </div>
+          <button onClick={() => navigate('/scan')} className={styles.noScanBtn}>Start AI Scan →</button>
+        </div>
+      )}
+
       {/* Stats Row */}
       <div className={styles.statsRow}>
         <div className={styles.statCard}>
-          <CircleProgress pct={glowScore} size={72} stroke={6} color={theme.accent} label="Glow" />
+          <CircleProgress pct={glowScore ?? 0} size={72} stroke={6} color={theme.accent} label="Glow" />
           <div className={styles.statInfo}>
             <div className={styles.statLabel}>Glow Score</div>
-            <div className={styles.statValue}>{glowScore}<span>/100</span></div>
+            <div className={styles.statValue}>{glowScore ?? '—'}{glowScore != null && <span>/100</span>}</div>
             <div className={styles.statSub}>
-              {glowScore >= 85 ? 'Excellent ✨' : glowScore >= 70 ? 'Great 🌸' : 'Good 💪'}
+              {glowScore == null ? 'Scan to reveal' : glowScore >= 85 ? 'Excellent ✨' : glowScore >= 70 ? 'Great 🌸' : 'Good 💪'}
             </div>
           </div>
         </div>
@@ -103,8 +116,8 @@ export const PageVanity = () => {
           <div className={styles.undertoneOrb} style={{ background: undertoneGradient }} />
           <div className={styles.statInfo}>
             <div className={styles.statLabel}>Undertone</div>
-            <div className={styles.statValue} style={{ fontSize: 20 }}>{undertone}</div>
-            <div className={styles.statSub}>Foundation match key</div>
+            <div className={styles.statValue} style={{ fontSize: 20 }}>{undertone ?? '—'}</div>
+            <div className={styles.statSub}>{undertone ? 'Foundation match key' : 'Scan to reveal'}</div>
           </div>
         </div>
 
@@ -112,21 +125,21 @@ export const PageVanity = () => {
           <div className={styles.miniStats}>
             <div className={styles.miniStat}>
               <div className={styles.miniBar}>
-                <div className={styles.miniBarFill} style={{ width: `${hydration}%`, background: '#7BAFD4' }} />
+                <div className={styles.miniBarFill} style={{ width: `${hydration ?? 0}%`, background: '#7BAFD4' }} />
               </div>
-              <span>Hydration {hydration}%</span>
+              <span>Hydration {hydration != null ? `${hydration}%` : '—'}</span>
             </div>
             <div className={styles.miniStat}>
               <div className={styles.miniBar}>
-                <div className={styles.miniBarFill} style={{ width: `${oiliness}%`, background: '#B88A76' }} />
+                <div className={styles.miniBarFill} style={{ width: `${oiliness ?? 0}%`, background: '#B88A76' }} />
               </div>
-              <span>Oiliness {oiliness}%</span>
+              <span>Oiliness {oiliness != null ? `${oiliness}%` : '—'}</span>
             </div>
           </div>
           <div className={styles.statInfo}>
             <div className={styles.statLabel}>Skin Stats</div>
-            <div className={styles.statValue} style={{ fontSize: 18 }}>{faceShape} Face</div>
-            <div className={styles.statSub}>Shape analysis</div>
+            <div className={styles.statValue} style={{ fontSize: 18 }}>{faceShape ? `${faceShape} Face` : '—'}</div>
+            <div className={styles.statSub}>{faceShape ? 'Shape analysis' : 'Scan to reveal'}</div>
           </div>
         </div>
 

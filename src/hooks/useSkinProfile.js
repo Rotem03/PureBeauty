@@ -21,6 +21,7 @@ const MOCK_PROFILE = {
 export const useSkinProfile = () => {
   const { user, skinProfile, setSkinProfile } = useApp()
   const [loading, setLoading] = useState(false)
+  const [fetched, setFetched] = useState(false)
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -34,14 +35,19 @@ export const useSkinProfile = () => {
         .order('created_at', { ascending: false })
         .limit(1)
         .single()
-      if (error) setError(error.message)
-      else setSkinProfile(data)
+      if (!error && data) setSkinProfile(data)
+      setFetched(true)
       setLoading(false)
     }
     fetch()
   }, [user])
 
-  return { profile: skinProfile ?? MOCK_PROFILE, loading, error }
+  // Guests see mock data; logged-in users see null until they scan
+  const profile = !user
+    ? MOCK_PROFILE
+    : skinProfile ?? (fetched ? null : null)
+
+  return { profile, loading, error, hasScan: !!skinProfile }
 }
 
 export const saveSkinProfile = async (userId, profileData) => {
