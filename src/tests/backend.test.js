@@ -102,7 +102,7 @@ describe('User Collection — CRUD', () => {
   it('adds a product to collection (Create)', async () => {
     const { data, error } = await supabase
       .from('user_products')
-      .upsert({ user_id: userId, product_id: testProductId, match_score: 90 })
+      .upsert({ user_id: userId, product_id: testProductId, match_score: 90 }, { onConflict: 'user_id,product_id' })
       .select()
     expect(error).toBeNull()
     expect(data[0].product_id).toBe(testProductId)
